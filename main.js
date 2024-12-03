@@ -2,6 +2,10 @@
 const MIN_PLAYERS = 2;
 const MAX_PLAYERS = 4;
 
+const CELLS_NUM = 40;
+
+let gameBoard;
+
 //функция проверки. value в диапазоне или нет
 function mathClamp(min, value, max) {
   return min <= value && value <= max;
@@ -35,13 +39,38 @@ function createGameBoard() {
     playerTurnIndex: 0,
     dice: [0, 0],
     players: [],
-    cells: [],
+    cells: new Array(CELLS_NUM),
     time: 0,
     trades: [],
   };
 }
 
-function nextTurn() {}
+function movePlayer() {
+  const diceSumm = gameBoard.dice[0] + gameBoard.dice[1];
+  const player = gameBoard.players[gameBoard.playerTurnIndex];
+
+  player.position += diceSumm;
+  if (player.position >= CELLS_NUM) {
+    player.position -= CELLS_NUM;
+  }
+}
+
+function getRandomIntInRange(min, max) {
+  return min + Math.floor(Math.random() * max);
+}
+
+function diceRoll() {
+  gameBoard.dice[0] = getRandomIntInRange(1, 6);
+  gameBoard.dice[1] = getRandomIntInRange(1, 6);
+}
+
+function updateTimer(newTime) {
+  gameBoard.time = newTime;
+}
+
+function nextTurn() {
+  console.log("next turn");
+}
 
 function nextRound() {
   nextTurn();
@@ -61,7 +90,7 @@ function startGame() {
 
   validatePlayersNum(playersNum);
 
-  const gameBoard = createGameBoard();
+  gameBoard = createGameBoard();
   gameBoard.players = createPlayers(playersNum);
 
   console.log(gameBoard);
@@ -72,8 +101,8 @@ function startGame() {
 const main = () => {
   startGame();
 
-  const nextRoundBtn = document.getElementById("nextRoundBtn");
-  nextRoundBtn.addEventListener("click", nextTurn);
+  const nextTurnBtn = document.getElementById("nextTurnBtn");
+  nextTurnBtn.addEventListener("click", nextTurn);
 };
 
 main();
