@@ -36,14 +36,17 @@ function createPlayers(playersNum) {
 
 function createGameBoard() {
   return {
-    playerTurnIndex: 0,
+    playerTurnIndex: -1,
     dice: [0, 0],
     players: [],
     cells: new Array(CELLS_NUM),
     time: 0,
     trades: [],
+    round: -1,
   };
 }
+
+function cellAction() {}
 
 function movePlayer() {
   const diceSumm = gameBoard.dice[0] + gameBoard.dice[1];
@@ -59,9 +62,13 @@ function getRandomIntInRange(min, max) {
   return min + Math.floor(Math.random() * max);
 }
 
-function diceRoll() {
+function rollDice() {
   gameBoard.dice[0] = getRandomIntInRange(1, 6);
   gameBoard.dice[1] = getRandomIntInRange(1, 6);
+  const diceValue = document.getElementById("diceValue");
+  diceValue.innerText = `${gameBoard.dice[0]} + ${gameBoard.dice[1]}`;
+  movePlayer();
+  nextTurn();
 }
 
 function updateTimer(newTime) {
@@ -70,10 +77,17 @@ function updateTimer(newTime) {
 
 function nextTurn() {
   console.log("next turn");
+  console.log({ gameBoard });
+  gameBoard.playerTurnIndex++;
+  if (gameBoard.playerTurnIndex >= gameBoard.players.length) {
+    nextRound();
+  }
 }
 
 function nextRound() {
-  nextTurn();
+  gameBoard.playerTurnIndex = 0;
+  console.log("next round");
+  gameBoard.round++;
 }
 
 function validatePlayersNum(playersNum) {
@@ -101,8 +115,8 @@ function startGame() {
 const main = () => {
   startGame();
 
-  const nextTurnBtn = document.getElementById("nextTurnBtn");
-  nextTurnBtn.addEventListener("click", nextTurn);
+  const rollDiceBtn = document.getElementById("rollDiceBtn");
+  rollDiceBtn.addEventListener("click", rollDice);
 };
 
 main();
